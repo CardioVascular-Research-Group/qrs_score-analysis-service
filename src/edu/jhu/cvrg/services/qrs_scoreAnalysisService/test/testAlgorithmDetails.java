@@ -1,4 +1,4 @@
-package edu.jhu.cvrg.services.physionetAnalysisService.test;
+package edu.jhu.cvrg.services.qrs_scoreAnalysisService.test;
 
 import java.io.File;
 import java.io.IOException;
@@ -7,8 +7,8 @@ import org.apache.commons.io.FileUtils;
 
 import com.thoughtworks.xstream.XStream;
 
-import edu.jhu.cvrg.services.physionetAnalysisService.lookup.AlgorithmDetailLookup;
-import edu.jhu.cvrg.services.physionetAnalysisService.serviceDescriptionData.AlgorithmServiceData;
+import edu.jhu.cvrg.services.qrs_scoreAnalysisService.lookup.AlgorithmDetailLookup;
+import edu.jhu.cvrg.services.qrs_scoreAnalysisService.serviceDescriptionData.AlgorithmServiceData;
 
 
 public class testAlgorithmDetails {

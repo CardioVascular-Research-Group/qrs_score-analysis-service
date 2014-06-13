@@ -1,4 +1,4 @@
-package edu.jhu.cvrg.services.physionetAnalysisService;
+package edu.jhu.cvrg.services.qrs_scoreAnalysisService;
 
 import java.util.HashMap;
 import java.util.List;
@@ -15,7 +15,7 @@ public class AnalysisVO {
 	private long folderId;
 	private String jobId;
 	private String subjectId;
-	private PhysionetMethods algorithm;
+	private QRS_ScoreMethods algorithm;
 	private List<String> inputFileNames;
 	private String[] outputFileNames;
 	public Map<String, Object> commandParamMap;
@@ -23,7 +23,7 @@ public class AnalysisVO {
 	private boolean sucess;
 	private String errorMessage;
 	
-	public AnalysisVO(String jobId, String userId, long groupId, long folderId, String subjectId, PhysionetMethods algorithm, List<String> inputFileNames, Map<String, Object> commandParamMap) {
+	public AnalysisVO(String jobId, String userId, long groupId, long folderId, String subjectId, QRS_ScoreMethods algorithm, List<String> inputFileNames, Map<String, Object> commandParamMap) {
 		super();
 		this.userId = userId;
 		this.groupId = groupId;
@@ -51,7 +51,7 @@ public class AnalysisVO {
 		return subjectId;
 	}
 
-	public PhysionetMethods getAlgorithm() {
+	public QRS_ScoreMethods getAlgorithm() {
 		return algorithm;
 	}
 

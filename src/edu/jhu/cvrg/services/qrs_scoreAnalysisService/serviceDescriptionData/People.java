@@ -1,4 +1,4 @@
-package edu.jhu.cvrg.services.physionetAnalysisService.serviceDescriptionData;
+package edu.jhu.cvrg.services.qrs_scoreAnalysisService.serviceDescriptionData;
 
 public class People {
 	public String sFirstName;

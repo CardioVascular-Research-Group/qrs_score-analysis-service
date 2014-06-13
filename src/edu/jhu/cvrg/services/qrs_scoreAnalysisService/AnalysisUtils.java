@@ -1,4 +1,4 @@
-package edu.jhu.cvrg.services.physionetAnalysisService;
+package edu.jhu.cvrg.services.qrs_scoreAnalysisService;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -41,7 +41,7 @@ public class AnalysisUtils {
 	
 	private String sep = File.separator;
 	
-	public AnalysisVO parseInputParametersType2(OMElement param0, PhysionetMethods algorithm){
+	public AnalysisVO parseInputParametersType2(OMElement param0, QRS_ScoreMethods algorithm){
 		AnalysisVO ret = null;
 		debugPrintln("parseInputParametersType2()");
 		try {
@@ -78,6 +78,7 @@ public class AnalysisUtils {
 			
 		} catch (Exception e) {
 			errorMessage = "parseInputParametersType2 failed.";
+			debugPrintln("parseInputParametersType2() " + e.getMessage());
 			log.error(errorMessage + " " + e.getMessage());
 		}
 		
@@ -103,7 +104,7 @@ public class AnalysisUtils {
 			Map<String, OMElement> algorithms = ServiceUtils.extractParams(record.get("algorithms"));
 			for (String algorithmKey : algorithms.keySet()) {
 				Map<String, OMElement> algorithm = ServiceUtils.extractParams(algorithms.get(algorithmKey));
-				PhysionetMethods type = PhysionetMethods.getMethodByName(algorithmKey);
+				QRS_ScoreMethods type = QRS_ScoreMethods.getMethodByName(algorithmKey);
 				
 				String jobId = algorithm.get("jobID").getText();
 				String inputPath = ServiceUtils.SERVER_TEMP_ANALYSIS_FOLDER + sep +jobId;
@@ -197,7 +198,7 @@ public class AnalysisUtils {
 					tmpJobFolder.delete();
 				}
 				
-				ServiceUtils.addOMEChild("error","If analysis failed, put your message here: \"" + errorMessage + "\"",omeReturn,omFactory,omNs);
+				ServiceUtils.addOMEChild("error",analysis.getErrorMessage(),omeReturn,omFactory,omNs);
 			}
 		} catch (Exception e) {
 			errorMessage = "genericWrapperType2 failed.";

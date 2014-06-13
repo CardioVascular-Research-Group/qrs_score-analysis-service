@@ -1,7 +1,7 @@
-package edu.jhu.cvrg.services.physionetAnalysisService.test;
+package edu.jhu.cvrg.services.qrs_scoreAnalysisService.test;
 
-import edu.jhu.cvrg.services.physionetAnalysisService.lookup.AlgorithmDetailLookup;
-import edu.jhu.cvrg.services.physionetAnalysisService.serviceDescriptionData.AlgorithmServiceData;
+import edu.jhu.cvrg.services.qrs_scoreAnalysisService.lookup.AlgorithmDetailLookup;
+import edu.jhu.cvrg.services.qrs_scoreAnalysisService.serviceDescriptionData.AlgorithmServiceData;
 
 
 

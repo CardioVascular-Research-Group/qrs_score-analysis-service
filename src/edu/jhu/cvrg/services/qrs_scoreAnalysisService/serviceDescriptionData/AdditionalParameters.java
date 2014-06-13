@@ -1,4 +1,4 @@
-package edu.jhu.cvrg.services.physionetAnalysisService.serviceDescriptionData;
+package edu.jhu.cvrg.services.qrs_scoreAnalysisService.serviceDescriptionData;
 
 /** Additional parameter to be passed to the algorithm if selected and entered by the user.
  * 

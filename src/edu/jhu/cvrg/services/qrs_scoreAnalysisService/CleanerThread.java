@@ -1,4 +1,4 @@
-package edu.jhu.cvrg.services.physionetAnalysisService;
+package edu.jhu.cvrg.services.qrs_scoreAnalysisService;
 
 import java.util.HashMap;
 import java.util.List;

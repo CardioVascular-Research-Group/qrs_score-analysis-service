@@ -1,20 +1,20 @@
 /**
  * 
  */
-package edu.jhu.cvrg.services.physionetAnalysisService.test;
+package edu.jhu.cvrg.services.qrs_scoreAnalysisService.test;
 
 import org.apache.axiom.om.OMAbstractFactory;
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.OMFactory;
 import org.apache.axiom.om.OMNamespace;
 
-import edu.jhu.cvrg.services.physionetAnalysisService.Physionet;
+import edu.jhu.cvrg.services.qrs_scoreAnalysisService.QRS_ScoreService;
 
 /**
  * @author mshipwa1
  *
  */
-public class testPhysionet {
+public class testQRS_Score {
 
 	/**
 	 * @param args
@@ -25,20 +25,20 @@ public class testPhysionet {
 		OMNamespace omNs = omFactory.createOMNamespace("http://www.cvrgrid.org/physionetAnalysisService/", "physionetAnalysisService"); 	 
 		OMElement omeSqrs = omFactory.createOMElement("sqrsWrapperType2", omNs); 
 		
-		addOMEChild("fileCount",
+		addOMEChildLocal("fileCount",
 				"2", 
 				omeSqrs,omFactory,omNs);
-		addOMEChild("fileNames",
+		addOMEChildLocal("fileNames",
 				"/test/jhu315.dat^/test/jhu315.hea^", 
 				omeSqrs,omFactory,omNs);
-		addOMEChild("verbose",
+		addOMEChildLocal("verbose",
 				"true", 
 				omeSqrs,omFactory,omNs);
 
 		try {
-			Physionet test = new Physionet();
+			QRS_ScoreService test = new QRS_ScoreService();
 			
-			OMElement omeSqrsResult = test.sqrsWrapperType2(omeSqrs);
+			OMElement omeSqrsResult = test.qrs_scoreWrapperType2(omeSqrs);
 			
 			
 		} catch (Exception e) {
@@ -47,7 +47,7 @@ public class testPhysionet {
 		}
 	}
 
-	/** Wrapper around the 3 common functions for adding a child element to a parent OMElement.
+	/** Local copy of utility, Wrapper around the 3 common functions for adding a child element to a parent OMElement.
 	 * 
 	 * @param name - name/key of the child element
 	 * @param value - value of the new element
@@ -55,7 +55,7 @@ public class testPhysionet {
 	 * @param factory - OMFactory
 	 * @param dsNs - OMNamespace
 	 */
-	private static void addOMEChild(String name, String value, OMElement parent, OMFactory factory, OMNamespace dsNs){
+	private static void addOMEChildLocal(String name, String value, OMElement parent, OMFactory factory, OMNamespace dsNs){
 		OMElement child = factory.createOMElement(name, dsNs);
 		child.addChild(factory.createOMText(value));
 		parent.addChild(child);

@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE project>
 
-<project name="physionet-analysis-service" basedir="." default="deployAnalysisService">
+<project name="qrs_score-analysis-service" basedir="." default="deployAnalysisService">
 	
 	<property name="liferay" value="/opt/liferay" />
 	<property name="liferay-sdk" value="${liferay}/liferay-plugins-sdk-6.1.1"/>
@@ -48,9 +48,9 @@
 		
 		<javac target="1.5" classpathref="project-classpath" srcdir="src" includes="edu/**/serviceDescriptionData/*" destdir="build/class" debug="true"/>
 		<javac target="1.5" classpathref="project-classpath" srcdir="src" includes="edu/**/${projectName}/**" excludes="edu/**/${projectName}/**/test/*" destdir="build/class" debug="true"/>
-		
+		<!--
 		<copy file="src/resources/chesnokov_datatable.xsl" todir="build/class/edu/jhu/cvrg/services/physionetAnalysisService/wrapper/" />
-		
+		-->
 		<jar destfile="Aar/${projectName}.aar" basedir="build/class">
 			<metainf dir="Aar/meta-inf" />
 			<include name="**/**"/>
@@ -74,13 +74,13 @@
 	
 	<target name="compileAnalysisService">
 		<antcall target="compileService">
-			<param name="projectName" value="physionetAnalysisService"/>
+			<param name="projectName" value="qrs_scoreAnalysisService"/>
 		</antcall>
 	</target>
 	
 	<target name="deployAnalysisService" depends="compileAnalysisService">
 		<antcall target="deployService">
-			<param name="projectName" value="physionetAnalysisService"/>
+			<param name="projectName" value="qrs_scoreAnalysisService"/>
 		</antcall>
 	</target>
 		
