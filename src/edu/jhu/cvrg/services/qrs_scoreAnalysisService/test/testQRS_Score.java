@@ -22,9 +22,28 @@ public class testQRS_Score {
 	public static void main(String[] args) {
 		System.out.println("main() started.");
 		OMFactory omFactory = OMAbstractFactory.getOMFactory(); 	 
-		OMNamespace omNs = omFactory.createOMNamespace("http://www.cvrgrid.org/physionetAnalysisService/", "physionetAnalysisService"); 	 
-		OMElement omeSqrs = omFactory.createOMElement("sqrsWrapperType2", omNs); 
+		OMNamespace omNs = omFactory.createOMNamespace("http://www.cvrgrid.org/QRS_ScoreService/", "QRS_ScoreService"); 	 
+		OMElement omeSqrs = omFactory.createOMElement("qrs_scoreWrapperType2", omNs); 
 		
+		addOMEChildLocal("jobID",
+				"333333333", 
+				omeSqrs,omFactory,omNs);
+		addOMEChildLocal("userID",
+				"444444444", 
+				omeSqrs,omFactory,omNs);
+		addOMEChildLocal("folderID",
+				"555555555", 
+				omeSqrs,omFactory,omNs);
+		addOMEChildLocal("groupID",
+				"666666666", 
+				omeSqrs,omFactory,omNs);
+		addOMEChildLocal("subjectID",
+				"777777777", 
+				omeSqrs,omFactory,omNs);
+		addOMEChildLocal("parameterlist",
+				"", 
+				omeSqrs,omFactory,omNs);
+
 		addOMEChildLocal("fileCount",
 				"2", 
 				omeSqrs,omFactory,omNs);
@@ -38,7 +57,7 @@ public class testQRS_Score {
 		try {
 			QRS_ScoreService test = new QRS_ScoreService();
 			
-			OMElement omeSqrsResult = test.qrs_scoreWrapperType2(omeSqrs);
+			OMElement omeQRS_Score_Result = test.qrs_scoreWrapperType2(omeSqrs);
 			
 			
 		} catch (Exception e) {
