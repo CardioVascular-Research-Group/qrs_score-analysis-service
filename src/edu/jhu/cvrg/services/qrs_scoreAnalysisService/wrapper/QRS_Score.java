@@ -1279,12 +1279,31 @@ public class QRS_Score {
 		return QRS_Score;
 	}
 
-	/** Run all the calculations for RBBB.
+	/** Run all the calculations for LBBB.
 	 * set all the public sub-totals, and final result. 
 	 * @return QRS_score;
 	 */
 	public int calculateQRS_score_LBBB(){
 		CalculateRatios();
+//		points_I = calcLead_I_LBBB();
+//		points_II= calcLead_II_LBBB();
+		points_I = calcLead_I();
+		points_II= calcLead_II();
+		points_aVL=calcLead_aVL();
+		points_aVF=calcLead_aVF();
+		points_V1ant=calcLead_V1ant();
+		points_V1post=calcLead_V1post();
+		points_V2ant=calcLead_V2ant();
+		points_V2post=calcLead_V2post();
+		points_V3=calcLead_V3();
+		points_V4=calcLead_V4();
+		points_V5=calcLead_V5();
+		points_V6=calcLead_V6();
+
+		//--------------------
+		QRS_Score=points_I+points_II+points_aVL+points_aVF+points_V1ant+points_V1post+points_V2ant+points_V2post+points_V3+points_V4+points_V5+points_V6;  //=points_I+points_II+points_aVL+points_aVF+points_V1ant+points_V1post+points_V2ant+points_V2post+points_V3+points_V4+points_V5+points_V6
+
+		debugPrintValues();
 		return QRS_Score;
 	}
 
