@@ -17,8 +17,9 @@ import org.apache.axiom.om.OMFactory;
 import org.apache.axiom.om.OMNamespace;
 import org.apache.log4j.Logger;
 
-//import edu.jhu.cvrg.dbapi.dto.PhysionetMethods;
-//import edu.jhu.cvrg.waveform.model.PhysionetMethods;
+import edu.jhu.cvrg.analysis.vo.AnalysisResultType;
+import edu.jhu.cvrg.analysis.vo.AnalysisType;
+import edu.jhu.cvrg.analysis.vo.AnalysisVO;
 import edu.jhu.cvrg.waveform.service.ServiceProperties;
 import edu.jhu.cvrg.waveform.service.ServiceUtils;
 import edu.jhu.cvrg.waveform.utility.WebServiceUtility;
@@ -36,22 +37,24 @@ public class AnalysisUtils {
 	public List<String> inputFileNames = null;
 	private long folderID;
 	private long groupID;
+	String userID;
+	String subjectID;
 	
 	private static final Logger log = Logger.getLogger(AnalysisUtils.class);
 	
 	private String sep = File.separator;
 	
-	public AnalysisVO parseInputParametersType2(OMElement param0, QRS_ScoreMethods algorithm){
+	public AnalysisVO parseInputParametersType2(OMElement param0, AnalysisType algorithm){
 		AnalysisVO ret = null;
 		debugPrintln("parseInputParametersType2()");
 		try {
 			Map<String, OMElement> params = ServiceUtils.extractParams(param0);
 			
 			String jobID     	= params.get("jobID").getText() ;
-			String userID      	= params.get("userID").getText() ;
+			userID 		     	= params.get("userID").getText() ;
 			folderID      		= Long.parseLong(params.get("folderID").getText()) ;
 			groupID      		= Long.parseLong(params.get("groupID").getText()) ;
-			String subjectID    = params.get("subjectID").getText() ;
+			subjectID 			= params.get("subjectID").getText() ;
 			OMElement parameterlist = (OMElement) params.get("parameterlist");
 			debugPrintln("****  parameterlist ****: " + parameterlist);
 			
@@ -74,7 +77,7 @@ public class AnalysisUtils {
 				mapCommandParam = new HashMap<String, Object>(); 
 			}
 			
-			ret = new AnalysisVO(jobID, userID, groupID, folderID, subjectID, algorithm, inputFileNames, mapCommandParam);
+			ret = new AnalysisVO(jobID, algorithm, AnalysisResultType.ORIGINAL_FILE, inputFileNames, mapCommandParam);
 			
 		} catch (Exception e) {
 			errorMessage = "parseInputParametersType2 failed.";
@@ -104,7 +107,7 @@ public class AnalysisUtils {
 			Map<String, OMElement> algorithms = ServiceUtils.extractParams(record.get("algorithms"));
 			for (String algorithmKey : algorithms.keySet()) {
 				Map<String, OMElement> algorithm = ServiceUtils.extractParams(algorithms.get(algorithmKey));
-				QRS_ScoreMethods type = QRS_ScoreMethods.getMethodByName(algorithmKey);
+				AnalysisType type = AnalysisType.getTypeByName(algorithmKey);
 				
 				String jobId = algorithm.get("jobID").getText();
 				String inputPath = ServiceUtils.SERVER_TEMP_ANALYSIS_FOLDER + sep +jobId;
@@ -118,7 +121,7 @@ public class AnalysisUtils {
 					ServiceUtils.createTempLocalFile(params, name, inputPath, name);
 				}
 				
-				ret.add(new AnalysisVO(jobId, userId, groupId, folderID, subjectID, type, fileNames, null));
+				ret.add(new AnalysisVO(jobId, type, AnalysisResultType.ORIGINAL_FILE, fileNames, null));
 			}
 		}
 		return ret;
@@ -175,11 +178,11 @@ public class AnalysisUtils {
 			OMFactory omFactory = OMAbstractFactory.getOMFactory(); 	 
 			OMNamespace omNs = omFactory.createOMNamespace(sOMNameSpaceURI, sOMNameSpacePrefix); 	 
 
-			omeReturn = omFactory.createOMElement(analysis.getAlgorithm().getOmeName(), omNs); 
+			omeReturn = omFactory.createOMElement(analysis.getType().getOmeName(), omNs); 
 	
 			// Converts the array of filenames to a single "^" delimited String for output.
 			if (analysis.getErrorMessage() == null || analysis.getErrorMessage().length() == 0){
-				ServiceUtils.addOMEChild("filecount", new Long(analysis.getOutputFileNames().length).toString(),omeReturn,omFactory,omNs);
+				ServiceUtils.addOMEChild("filecount", new Long(analysis.getOutputFileNames().size()).toString(),omeReturn,omFactory,omNs);
 				omeReturn.addChild( ServiceUtils.makeOutputOMElement(analysis.getOutputFileNames(), "filenamelist", "filename", omFactory, omNs) );
 				ServiceUtils.addOMEChild("jobID", analysis.getJobId(), omeReturn, omFactory, omNs);
 				
@@ -213,9 +216,9 @@ public class AnalysisUtils {
 		Map<String, String> parameterMap = new HashMap<String, String>();
 		
 		parameterMap.put("jobID", analysis.getJobId());
-		parameterMap.put("groupID", String.valueOf(analysis.getGroupId()));
-		parameterMap.put("folderID", String.valueOf(analysis.getFolderId()));
-		parameterMap.put("userID", String.valueOf(analysis.getUserId()));
+		parameterMap.put("groupID", String.valueOf(this.groupID));
+		parameterMap.put("folderID", String.valueOf(this.folderID));
+		parameterMap.put("userID", this.userID);
 		
 		String fileNames = "";
 		for (String name : analysis.getOutputFileNames()) {
@@ -230,31 +233,6 @@ public class AnalysisUtils {
 		
 		
 	}
-
-	public OMElement buildAnalysisReturn(String jobID, Set<AnalysisVO> analysisSet, String returnOMEName){
-		OMElement omeReturn = null;
-		OMFactory omFactory = OMAbstractFactory.getOMFactory(); 	 
-		OMNamespace omNs = omFactory.createOMNamespace(sOMNameSpaceURI, sOMNameSpacePrefix);
-		omeReturn = omFactory.createOMElement(returnOMEName, omNs);
-		try{
-			
-			for (AnalysisVO analysisVO : analysisSet) {
-				OMElement omeAnalysis = omFactory.createOMElement("job", omNs);
-				
-				ServiceUtils.addOMEChild("subjectID", analysisVO.getSubjectId(), omeAnalysis, omFactory,omNs);
-				ServiceUtils.addOMEChild("algorithm", analysisVO.getAlgorithm().getName(), omeAnalysis, omFactory,omNs);
-				ServiceUtils.addOMEChild("status", "started", omeAnalysis, omFactory,omNs);
-				
-				omeReturn.addChild(omeAnalysis);
-			}
-		} catch (Exception e) {
-			errorMessage = returnOMEName + " failed. "+ e.getMessage();
-			ServiceUtils.addOMEChild("status", errorMessage, omeReturn, omFactory, omNs);
-			log.error(errorMessage);
-		}
-		return omeReturn;
-	}
-
 
 	/** Moves the files listed in the array from the source root directory to Liferay.
 	 * 

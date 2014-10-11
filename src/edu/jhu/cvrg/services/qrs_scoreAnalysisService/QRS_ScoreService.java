@@ -1,17 +1,12 @@
 package edu.jhu.cvrg.services.qrs_scoreAnalysisService;
-//
-//import java.util.Map;
-//import java.util.Set;
 
 import org.apache.axiom.om.OMElement;
-//import org.apache.axiom.om.impl.llom.util.AXIOMUtil;
 import org.apache.log4j.Logger;
 
-//import com.thoughtworks.xstream.XStream;
-
-//import edu.jhu.cvrg.dbapi.dto.PhysionetMethods;
-//import edu.jhu.cvrg.services.qrs_scoreAnalysisService.serviceDescriptionData.AlgorithmServiceData;
-
+import edu.jhu.cvrg.analysis.vo.AnalysisResultType;
+import edu.jhu.cvrg.analysis.vo.AnalysisType;
+import edu.jhu.cvrg.analysis.vo.AnalysisVO;
+import edu.jhu.cvrg.analysis.wrapper.AnalysisWrapper;
 
 /** A collection of methods for building a generic Web Service to wrap around an arbitrary analysis algorithm..
  * 
@@ -37,22 +32,28 @@ public class QRS_ScoreService {
 	 * @throws Exception 
 	 */
 	public org.apache.axiom.om.OMElement qrs_scoreWrapperType2(org.apache.axiom.om.OMElement param0) throws Exception {
-		return callWrapper(param0, QRS_ScoreMethods.QRS_SCORE);	
+		return callWrapper(param0, AnalysisType.QRS_SCORE);	
 	}
 
-	private OMElement callWrapper(org.apache.axiom.om.OMElement e, QRS_ScoreMethods method) {
+	private OMElement callWrapper(org.apache.axiom.om.OMElement e, AnalysisType method) {
 		debugPrintln(method.getOmeName() + "() started.");
 		
 		AnalysisUtils util = new AnalysisUtils();
 		
 		AnalysisVO analysis = util.parseInputParametersType2(e, method);          //(e, method);
 		
-		QRS_ScoreExecute execute = new QRS_ScoreExecute(analysis);
 		
-		//************* Calls the wrapper of the analysis algorithm. *********************
-		execute.execute();
-		//************* Return value will be stored on AnalysisVO.    *********************
-		
+		try {
+			
+			AnalysisWrapper algorithm = analysis.getType().getWrapper().getConstructor(AnalysisVO.class).newInstance(analysis);
+			
+			algorithm.defineInputParameters();
+			algorithm.execute();
+			
+		} catch (Exception ex) {
+			System.err.println(ex.getMessage());
+		}
+			
 		return util.buildOmeReturnType2(analysis);
 	}
 
