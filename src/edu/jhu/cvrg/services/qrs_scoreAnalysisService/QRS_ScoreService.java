@@ -3,7 +3,6 @@ package edu.jhu.cvrg.services.qrs_scoreAnalysisService;
 import org.apache.axiom.om.OMElement;
 import org.apache.log4j.Logger;
 
-import edu.jhu.cvrg.analysis.vo.AnalysisResultType;
 import edu.jhu.cvrg.analysis.vo.AnalysisType;
 import edu.jhu.cvrg.analysis.vo.AnalysisVO;
 import edu.jhu.cvrg.analysis.wrapper.AnalysisWrapper;
@@ -56,29 +55,6 @@ public class QRS_ScoreService {
 			
 		return util.buildOmeReturnType2(analysis);
 	}
-
-//	public org.apache.axiom.om.OMElement performAnalysis(org.apache.axiom.om.OMElement e) throws Exception {
-//		AnalysisUtils util = new AnalysisUtils();
-//		
-//		
-//		Set<AnalysisVO> jobs = util.extractToAnalysisObject(e);
-//		
-//		ThreadGroup trdGroup = new ThreadGroup("Analysis Group");
-//		
-//		CleanerThread manager = new CleanerThread(trdGroup);
-//		
-//		for (AnalysisVO analysisVO : jobs) {
-//			PhysionetExecute execute = new PhysionetExecute(trdGroup, analysisVO);
-//			manager.addFiles(execute.getName(), analysisVO.getFileNames());
-//			execute.start();
-//		}
-//		
-//		manager.start();
-//		
-//		return util.buildAnalysisReturn("TEST", jobs, "performAnalysis");	
-//	}
-//	
-	
 
 	private void debugPrintln(String text){
 		System.out.println("- QRS_ScoreService - " + text);

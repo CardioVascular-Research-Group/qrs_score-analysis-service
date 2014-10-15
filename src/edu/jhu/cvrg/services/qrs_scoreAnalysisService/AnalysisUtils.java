@@ -1,14 +1,11 @@
 package edu.jhu.cvrg.services.qrs_scoreAnalysisService;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.StringTokenizer;
 
 import org.apache.axiom.om.OMAbstractFactory;
@@ -88,45 +85,6 @@ public class AnalysisUtils {
 		return ret;
 	}
 	
-	public Set<AnalysisVO> extractToAnalysisObject(OMElement e){
-		
-		Set<AnalysisVO> ret = new HashSet<AnalysisVO>();
-		
-		Map<String, OMElement> params = ServiceUtils.extractParams(e);
-		String userId = params.get("userID").getText();
-		long groupId = Long.parseLong(params.get("groupID").getText());
-		
-		
-		
-		Map<String, OMElement> records = ServiceUtils.extractParams(params.get("records"));
-		for (String recordKey : records.keySet()) {
-			Map<String, OMElement> record = ServiceUtils.extractParams(records.get(recordKey));
-			String subjectID = record.get("subjectID").getText();
-			long folderID = Long.parseLong(record.get("folderID").getText());
-			
-			Map<String, OMElement> algorithms = ServiceUtils.extractParams(record.get("algorithms"));
-			for (String algorithmKey : algorithms.keySet()) {
-				Map<String, OMElement> algorithm = ServiceUtils.extractParams(algorithms.get(algorithmKey));
-				AnalysisType type = AnalysisType.getTypeByName(algorithmKey);
-				
-				String jobId = algorithm.get("jobID").getText();
-				String inputPath = ServiceUtils.SERVER_TEMP_ANALYSIS_FOLDER + sep +jobId;
-				
-				StringTokenizer strToken = new StringTokenizer(algorithm.get("fileNames").getText(), "^");
-				List<String> fileNames = new ArrayList<String>();
-				while (strToken.hasMoreTokens()) {
-					String name = strToken.nextToken();
-					fileNames.add(inputPath + sep + name);
-					
-					ServiceUtils.createTempLocalFile(params, name, inputPath, name);
-				}
-				
-				ret.add(new AnalysisVO(jobId, type, AnalysisResultType.ORIGINAL_FILE, fileNames, null));
-			}
-		}
-		return ret;
-	}
-		
 	/** Parses a service's incoming XML and builds a Map of all the parameters for easy access.
 	 * @param param0 - OMElement representing XML with the incoming parameters.
 	 */
@@ -233,77 +191,6 @@ public class AnalysisUtils {
 		
 		
 	}
-
-	/** Moves the files listed in the array from the source root directory to Liferay.
-	 * 
-	 * @param fileNames - array of full file path/name strings.
-	 * @return - array of the new full file path/name strings.
-	 */
-	protected static String[] moveFiles(String[] fileNames, long groupId, long folderId, long userId){
-		String errorMessage = "";
-		debugPrintln("moveFiles() from: local to: liferay");
-		if (fileNames != null) {
-			int iMovedCount=0;
-			try {
-				for(int i=0;i<fileNames.length;i++){
-					
-					File orign = new File(fileNames[i]);
-					FileInputStream fis = new FileInputStream(orign);
-					
-					String path = ServiceUtils.extractPath(fileNames[i]);
-					
-					ServiceUtils.sendToLiferay(groupId, folderId, userId, path, orign.getName(), orign.length(), fis);
-					
-					iMovedCount++;
-				}
-				if(iMovedCount != fileNames.length){
-					errorMessage += "moveFiles() failed. " + iMovedCount + " of " + fileNames.length + " moved successfully.";
-				}
-				
-			} catch (Exception e) {
-				errorMessage += "moveFiles() failed.";
-				log.error(errorMessage + " " + e.getMessage());
-				return null;
-			}
-	    }
-		return fileNames;		
-	}
-	
-	/** Find the first filename in the array with the "hea" extension.
-	 * 
-	 * @param asInputFileNames - array of filenames to search
-	 * @return - full path/name.ext as found in the array.
-	 */
-	public static String findHeaderPathName(List<String> asInputFileNames){
-		debugPrintln("findHeaderPathName()");
-		return findPathNameExt(asInputFileNames, "hea");
-	}
-
-	/** Find the first filename in the array with the specified extension.
-	 * 
-	 * @param asInputFileNames - array of filenames to search
-	 * @param sExtension - extension to look for, without the dot(".") e.g. "hea".
-	 * @return - full path/name.ext as found in the array.
-	 */
-	public static String findPathNameExt(List<String> asInputFileNames, String sExtension){
-		debugPrintln("findHeaderPathName()");
-		String sHeaderPathName="";
-		int iIndexPeriod=0;
-		
-		for (String sTemp : asInputFileNames) {
-			debugPrintln("- asInputFileNames: " + sTemp);
-			iIndexPeriod = sTemp.lastIndexOf(".");
-			
-			if( sExtension.contains(sTemp.substring(iIndexPeriod+1)) ){
-				sHeaderPathName = sTemp;
-				break;
-			}
-		}
-		
-		debugPrintln("- ssHeaderPathName: " + sHeaderPathName);
-		return sHeaderPathName;
-	}
-
 	
 	private static void debugPrintln(String text){
 		System.out.println("++ analysisUtils + " + text);
