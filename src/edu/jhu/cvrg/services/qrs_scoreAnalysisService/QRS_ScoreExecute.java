@@ -53,7 +53,7 @@ public class QRS_ScoreExecute extends Thread{
 	 * @return  - array of (absolute) output file path/name strings or null if the analysis fails.
 	 */
 	private String[] executeV2_qrs_score(){
-		debugPrintln("executeV2_qrs_score()");
+//		debugPrintln("executeV2_qrs_score()");
 		errorMessage = "executeV2_qrs_score() failed.";
 		String[] asResultHandles=null;
 		try {
@@ -62,7 +62,7 @@ public class QRS_ScoreExecute extends Thread{
 				Object[] keys = analysis.getCommandParamMap().keySet().toArray();
 				
 				for(int i=0;i<keys.length;i++){
-					debugPrintln("Key: \"" + (String)keys[i] + "\" Value: \"" + analysis.getCommandParamMap().get((String)keys[i]) + "\"");
+//					debugPrintln("Key: \"" + (String)keys[i] + "\" Value: \"" + analysis.getCommandParamMap().get((String)keys[i]) + "\"");
 				}
 			}
 
@@ -72,14 +72,14 @@ public class QRS_ScoreExecute extends Thread{
 			String sHeaderPath = ServiceUtils.extractPath(sHeaderPathName);
 			String sHeaderName = ServiceUtils.extractName(sHeaderPathName);
 			
-			debugPrintln("- sHeaderPathName: " + sHeaderPathName);
-			debugPrintln("- sHeaderPath: " + sHeaderPath);
-			debugPrintln("- sHeaderName: " + sHeaderName);
+//			debugPrintln("- sHeaderPathName: " + sHeaderPathName);
+//			debugPrintln("- sHeaderPath: " + sHeaderPath);
+//			debugPrintln("- sHeaderName: " + sHeaderName);
 			
 			//*** Insert the call to the analysis algorithm here:	
 			QRS_ScoreApplicationWrapper appWrapper =  new QRS_ScoreApplicationWrapper(analysis.getJobIdNumber());
 
-			debugPrintln("- Starting QRS_Score()");
+//			debugPrintln("- Starting QRS_Score()");
 			QRS_Score qrs = new QRS_Score();
 
 			int missingQ = 0, missingR = 0, missingS = 0, missingOther = 0;
@@ -160,14 +160,15 @@ public class QRS_ScoreExecute extends Thread{
 				status = appWrapper.straussSelvesterQRS_score(sHeaderName, sHeaderPath, qrs);
 			}
 			if( (missingQList.length()>0) || (missingRList.length()>0) || (missingSList.length()>0) || (missingOtherList.length()>0) ){
-				debugPrintln("Missing Q parameter List: \"" + missingQList + "\"");
-				debugPrintln("Missing R parameter List: \"" + missingRList + "\"");
-				debugPrintln("Missing S parameter List: \"" + missingSList + "\"");
-				debugPrintln("Missing \"Other\" parameter List: \"" + missingOtherList + "\"");
+//				debugPrintln("Missing Q parameter List: \"" + missingQList + "\"");
+//				debugPrintln("Missing R parameter List: \"" + missingRList + "\"");
+//				debugPrintln("Missing S parameter List: \"" + missingSList + "\"");
+//				debugPrintln("Missing \"Other\" parameter List: \"" + missingOtherList + "\"");
 			}
 			//*** If the analysis fails, this method should return a null.
 			if(!status){
 				asResultHandles = null;
+				debugPrintln(errorMessage);
 				analysis.setErrorMessage(errorMessage);
 			}else{
 				//*** Reformat(if necessary) the return values as one or more output files.
@@ -177,6 +178,7 @@ public class QRS_ScoreExecute extends Thread{
 			analysis.setSucess(status);
 		} catch (Exception e) {
 			errorMessage = errorMessage + " " + e.getMessage();
+			debugPrintln(errorMessage);
 			log.error(errorMessage);
 			analysis.setErrorMessage(errorMessage);
 		}		

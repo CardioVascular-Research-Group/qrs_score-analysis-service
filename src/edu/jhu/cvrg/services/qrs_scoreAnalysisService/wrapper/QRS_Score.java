@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class QRS_Score {
-	public boolean verbose = true;
+	public boolean verbose = false;
 	
  	public String Name = ""; //123442810;  //  	
  	public String ID  = ""; //= 123442810;  //
@@ -138,8 +138,11 @@ public class QRS_Score {
 	// outputs
 	private float RQra_I;  //  
 	private float RSra_I; // only used in LBBB
+	private float RQra_II; // only used in LBBB
+	private float RSra_II; // only used in LBBB
 	private float RQra_aVL;  //  
 	private float RQra_aVF;  //  
+	private float RSra_aVF;
 	private float RQra_V4;  //  
 	private float RQra_V5;  //  
 	private float RQra_V6;  //  
@@ -151,6 +154,7 @@ public class QRS_Score {
 	private int Qpts_I;  //  
 	private int RATpts_I;  //  
 	private int points_I;  //  
+	private int RATpts_II;
 	private int Qpts_II;  //  
 	private int points_II;  //  
 	private int Qpts_aVL;  //  
@@ -764,10 +768,10 @@ public class QRS_Score {
 		// qd_I, RQra_I, ra_I, 
 		// 30,   1,      200,  
 		mapThreshold.put("qd_I", 30.0);  
-		mapThreshold.put("RQra_I upper", 1.0); // only used with LBBB 
+		mapThreshold.put("RQra_I upper", 1.0); // only used with calcLead_I_LBBB 
 		mapThreshold.put("RQra_I", 1.0);  
-		mapThreshold.put("RSra_I upper", 1.5); // only used with LBBB 
-		mapThreshold.put("RSra_I lower", 1.0); // only used with LBBB 
+		mapThreshold.put("RSra_I upper", 1.5); // only used with calcLead_I_LBBB 
+		mapThreshold.put("RSra_I lower", 1.0); // only used with calcLead_I_LBBB 
 		mapThreshold.put("ra_I", 200.0);  
 		//---------------------------------
 		//qd_II upper, qd_II lower, 
@@ -804,7 +808,7 @@ public class QRS_Score {
 		//0,     10,          50,           60,          100,         1500,         2000,        1.5,      300,   300,   
 		mapThreshold.put("qd_V2ant upper", 0.0);    // used in V2ant
 		mapThreshold.put("qd_V2ant lower", 0.0);    // used in V2ant
-		mapThreshold.put("rd_V2ant lower", 0.0);   
+//		mapThreshold.put("rd_V2ant lower", 0.0);   // not used
 		mapThreshold.put("rd_V2 lower", 10.0);  // used in V2ant
 		mapThreshold.put("rd_V2 middle", 50.0);  
 		mapThreshold.put("rd_V2 upper", 60.0);  
@@ -910,7 +914,7 @@ public class QRS_Score {
 		//---------------------------------
 		//qd_V1ant, RSra_V1, rd_V1 upper, rd_V1 lower, ra_V1 upper, ra_V1 lower, qa_V1, sa_V1, 
 		//0,     1,       50,          40,          1000,        700,         200,   200,   
-		mapThreshold.put("qd_V1ant", 40.0);
+		mapThreshold.put("qd_V1ant", 50.0);
 		mapThreshold.put("RSra_V1", -1.0);  
 		mapThreshold.put("rd_V1 upper", 60.0);  
 		mapThreshold.put("rd_V1 lower", 50.0); 
@@ -930,10 +934,10 @@ public class QRS_Score {
 		//---------------------------------
 		//qd_V3 upper, qd_V3 lower, rd_V3 lower, rd_V3 upper, 
 		//30,          20,          10,          20,          
-		mapThreshold.put("qd_V3 upper", 30.0);  
-		mapThreshold.put("qd_V3 lower", 20.0);  
-		mapThreshold.put("rd_V3 lower", 10.0);  
-		mapThreshold.put("rd_V3 upper", 20.0);  
+//		mapThreshold.put("qd_V3 upper", 30.0);  
+//		mapThreshold.put("qd_V3 lower", 20.0);  
+//		mapThreshold.put("rd_V3 lower", 10.0);  
+//		mapThreshold.put("rd_V3 upper", 20.0);  
 		//---------------------------------
 		//qd_V4, RQra_V4 lower, RQra_V4 upper, RSra_V4 lower, RSra_V4 upper, ra_V4, 
 		//20,    0.5,           1.0,           0.5,           1.0,           500,   
@@ -976,7 +980,7 @@ public class QRS_Score {
 		//---------------------------------
 		//qd_V5, RQra_V5 lower, RQra_V5 upper, RSra_V5 lower, RSra_V5 upper, ra_V5, 
 		//30,    1,             2,             1,             2,             600,   
-		mapThreshold.put("RSra_V4 upper", 1.5);  
+		mapThreshold.put("RSra_V5 upper", 1.5);  
 		//---------------------------------
 		//qd_V6, RQra_V6 lower, RQra_V6 upper, RSra_V6 lower, RSra_V6 upper, ra_V6
 		//30,    1,             3,             1,             3,             600
@@ -999,7 +1003,7 @@ public class QRS_Score {
 		//---------------------------------
 		//qd_V1ant, RSra_V1, rd_V1 upper, rd_V1 lower, ra_V1 upper, ra_V1 lower, qa_V1, sa_V1, 
 		//0,     1,       50,          40,          1000,        700,         200,   200,   
-		mapThreshold.put("qd_V1ant", 40.0);
+		mapThreshold.put("qd_V1ant", 50.0);
 		mapThreshold.put("rd_V1ant", 20.0);
 		mapThreshold.put("RSra_V1", -1.0);  
 		mapThreshold.put("rd_V1 upper", 60.0);  
@@ -1020,10 +1024,10 @@ public class QRS_Score {
 		//---------------------------------
 		//qd_V3 upper, qd_V3 lower, rd_V3 lower, rd_V3 upper, 
 		//30,          20,          10,          20,          
-		mapThreshold.put("qd_V3 upper", 30.0);  
-		mapThreshold.put("qd_V3 lower", 20.0);  
-		mapThreshold.put("rd_V3 lower", 10.0);  
-		mapThreshold.put("rd_V3 upper", 20.0);  
+//		mapThreshold.put("qd_V3 upper", 30.0);  
+//		mapThreshold.put("qd_V3 lower", 20.0);  
+//		mapThreshold.put("rd_V3 lower", 10.0);  
+//		mapThreshold.put("rd_V3 upper", 20.0);  
 		//---------------------------------
 		//qd_V4, RQra_V4 lower, RQra_V4 upper, RSra_V4 lower, RSra_V4 upper, ra_V4, 
 		//20,    0.5,           1.0,           0.5,           1.0,           500,   
@@ -1039,24 +1043,39 @@ public class QRS_Score {
 		//---------------------------------
 		// qd_I, RQra_I, ra_I, 
 		// 30,   1,      200,  
-		mapThreshold.put("RQra_I upper", 1.0); // only used with LBBB 
-		mapThreshold.put("RSra_I upper", 1.5); // only used with LBBB 
-		mapThreshold.put("RSra_I lower", 1.0); // only used with LBBB 
+		mapThreshold.put("qd_I", 0.0);  
+		mapThreshold.put("RQra_I upper", 1.0); // only used with calcLead_I_LBBB 
+		mapThreshold.put("RSra_I upper", 1.5); // only used with calcLead_I_LBBB 
+		mapThreshold.put("RSra_I lower", 1.0); // only used with calcLead_I_LBBB 
 		//---------------------------------
 		//qd_II upper, qd_II lower, 
 		//40,          30,          
+		mapThreshold.put("RSra_II", 0.5); // only used with calcLead_I_LBBB 
+		mapThreshold.put("RQra_II", 0.5); // only used with calcLead_I_LBBB 
+		
 		//---------------------------------		
 		//qd_aVL, RQra_aVL, 
 		//30,     1,        
 		//---------------------------------
 		//qd_aVF upper, qd_aVF middle, qd_aVF lower, RQra_aVF lower, RQra_aVF upper, 
-		//50,           40,            30,           1,              2,              
+		//50,           40,            30,           1,              2,     
+		mapThreshold.put("RQra_aVF upper", 0.5); // only used with calcLead_I_LBBB 
+		mapThreshold.put("RSra_aVF upper", 0.5); // only used with calcLead_I_LBBB 
+		
 		//---------------------------------
 		//qd_V1ant, RSra_V1, rd_V1 upper, rd_V1 lower, ra_V1 upper, ra_V1 lower, qa_V1, sa_V1, 
-		//0,     1,       50,          40,          1000,        700,         200,   200,   
+		//0,     1,       50,          40,          1000,        700,         200,   200,
+		mapThreshold.put("rd_V1 lower", 20.0); 
+		mapThreshold.put("ra_V1 lower", 200.0); 
+		mapThreshold.put("rd_V1 upper", 30.0); 
+		mapThreshold.put("ra_V1 upper", 300.0); 
 		//---------------------------------
 		//qd_V2, rd_V2 lower, rd_V2 middle, rd_V2 upper, ra_V2 lower, ra_V2 middle, ra_V2 upper, Rsra_V2,  qa_V2, sa_V2, 
 		//0,     10,          50,           60,          100,         1500,         2000,        1.5,      300,   300,   
+		mapThreshold.put("rd_V2 lower", 20.0); 
+		mapThreshold.put("ra_V2 lower", 300.0); 
+		mapThreshold.put("rd_V2 upper", 30.0); 
+		mapThreshold.put("ra_V2 upper", 400.0); 
 		//---------------------------------
 		//qd_V3 upper, qd_V3 lower, rd_V3 lower, rd_V3 upper, 
 		//30,          20,          10,          20,          
@@ -1066,9 +1085,15 @@ public class QRS_Score {
 		//---------------------------------
 		//qd_V5, RQra_V5 lower, RQra_V5 upper, RSra_V5 lower, RSra_V5 upper, ra_V5, 
 		//30,    1,             2,             1,             2,             600,   
+		mapThreshold.put("qd_V5", 0.0);
+		mapThreshold.put("RSra_V5 lower", 2.0);  
+		mapThreshold.put("ra_V5", 500.0);  
 		//---------------------------------
 		//qd_V6, RQra_V6 lower, RQra_V6 upper, RSra_V6 lower, RSra_V6 upper, ra_V6
 		//30,    1,             3,             1,             3,             600
+		mapThreshold.put("qd_V6", 20.0);
+		mapThreshold.put("RSra_V6 lower", 2.0);  
+		mapThreshold.put("ra_V6", 600.0);
 	}
 
 
@@ -1285,20 +1310,20 @@ public class QRS_Score {
 	 */
 	public int calculateQRS_score_LBBB(){
 		CalculateRatios();
-//		points_I = calcLead_I_LBBB();
-//		points_II= calcLead_II_LBBB();
-		points_I = calcLead_I();
-		points_II= calcLead_II();
-		points_aVL=calcLead_aVL();
-		points_aVF=calcLead_aVF();
-		points_V1ant=calcLead_V1ant();
-		points_V1post=calcLead_V1post();
-		points_V2ant=calcLead_V2ant();
-		points_V2post=calcLead_V2post();
-		points_V3=calcLead_V3();
-		points_V4=calcLead_V4();
-		points_V5=calcLead_V5();
-		points_V6=calcLead_V6();
+		points_I = calcLead_I_LBBB();
+		points_II= calcLead_II_LBBB();
+//		points_I = calcLead_I();
+//		points_II= calcLead_II();
+		points_aVL=calcLead_aVL_LBBB();
+		points_aVF=calcLead_aVF_LBBB();
+		points_V1ant=calcLead_V1ant_LBBB();
+		points_V1post= 0;
+		points_V2ant=calcLead_V2ant_LBBB();
+		points_V2post=0;
+		points_V3=0;
+		points_V4=0;
+		points_V5=calcLead_V5_LBBB();
+		points_V6=calcLead_V6_LBBB();
 
 		//--------------------
 		QRS_Score=points_I+points_II+points_aVL+points_aVF+points_V1ant+points_V1post+points_V2ant+points_V2post+points_V3+points_V4+points_V5+points_V6;  //=points_I+points_II+points_aVL+points_aVF+points_V1ant+points_V1post+points_V2ant+points_V2post+points_V3+points_V4+points_V5+points_V6
@@ -1344,7 +1369,7 @@ public class QRS_Score {
 	}
 
 	private int calcLead_I_LBBB(){
-		Qpts_I = (qd_I > mapThreshold.get("qd_I")) ? 1: 0;  //  =IF(qd_I>0,1,0)
+		Qpts_I = (qd_I > mapThreshold.get("qd_I")  || (ra_I <= mapThreshold.get("ra_I"))) ? 1: 0;  //  =IF(qd_I>0,1,0)
 
 		// =IF(OR(RSra_I<=1,RQra_I<=1),2,IF(OR(RSra_I<=1.5,RQra_I<=1.5),1,0))
 		if((RSra_I <= mapThreshold.get("RSra_I lower")) || (RQra_I <= mapThreshold.get("RQra_I"))){ // OR(RSra_I<=1,RQra_I<=1),2 // re-using "RQra_I" for "RQra_I lower"
@@ -1361,6 +1386,8 @@ public class QRS_Score {
 	
 
 	private int calcLead_II(){
+		RATpts_II=0;
+
 		// CV -------------------- CW
 		//Qpts_II;  //  =IF(qd_II>=40,2,IF(qd_II>=30,1,0))
 		if(qd_II >= mapThreshold.get("qd_II upper")){
@@ -1376,11 +1403,13 @@ public class QRS_Score {
 	private int calcLead_II_LBBB(){
 		// CV -------------------- CW
 		//Qpts_II;  //  =IF(qd_II>=40,2,IF(qd_II>=30,1,0))
-		       //       =IF(qd_II>=40,2,IF(qd_II>=30,1,0))
-		if(qd_II >= mapThreshold.get("qd_II upper")){
-			Qpts_II = 2;
-		}
-		points_II=Qpts_II;  //  =Qpts_II
+		Qpts_II = calcLead_II();
+		
+		if((RSra_II <= mapThreshold.get("RSra_II")) || (RQra_II <= mapThreshold.get("RQra_II"))){ // R/Q <= 0.5  OR R/S <= 0.5
+			RATpts_II = 1;
+		}		
+		
+		points_II=Qpts_II + RATpts_II;  //  =Qpts_II
 		return points_II;
 	}
 	
@@ -1391,6 +1420,19 @@ public class QRS_Score {
 		points_aVL=Qpts_aVL+RATpts_aVL;  //  =Qpts_aVL+RATpts_aVL		
 		return points_aVL;
 	}
+
+	private int calcLead_aVL_LBBB(){
+		//-------------------- CY
+		Qpts_aVL = (qd_aVL >= 40) ? 1: 0; 
+		Qpts_aVL +=(qd_aVL >= 50) ? 1: 0;  
+		
+		RATpts_aVL = ( (RQra_aVL <= 0.5) ||  (RQra_aVL <= 0.5) ) ? 1: 0;  //  
+		RATpts_aVL +=( (RQra_aVL <= 1.0) ||  (RQra_aVL <= 1.0) ) ? 1: 0;  //  
+		
+		points_aVL=Qpts_aVL+RATpts_aVL;  //  =Qpts_aVL+RATpts_aVL		
+		return points_aVL;
+	}
+
 
 	private int calcLead_aVF(){
 		//-------------------- DB
@@ -1413,6 +1455,22 @@ public class QRS_Score {
 		points_aVF =Qpts_aVF+RATpts_aVF;  //  =Qpts_aVF+RATpts_aVF
 		return points_aVF;
 	}
+
+	private int calcLead_aVF_LBBB(){
+		//-------------------- DB
+		//Qpts_aVF;   // =IF(qd_aVF>=50,2,IF(qd_aVF>=40,1,0))
+		if(qd_aVF >= mapThreshold.get("qd_aVF upper")){
+			Qpts_aVF= 2;
+		}else{
+			Qpts_aVF = (qd_aVF >= mapThreshold.get("qd_aVF middle"))? 1: 0;
+		}
+				
+		RATpts_aVF = ( (RQra_aVF <= mapThreshold.get("RQra_aVF upper")) || (RSra_aVF <= mapThreshold.get("RSra_aVF upper")) )? 1: 0;
+		
+		points_aVF =Qpts_aVF+RATpts_aVF;  //  =Qpts_aVF+RATpts_aVF
+		return points_aVF;
+	}
+
 
 	private int calcLead_V1ant(){
 		//-------------------- DE
@@ -1467,6 +1525,24 @@ public class QRS_Score {
 		return points_V1ant;
 	}
 	
+	/** Used for "LBBB" conduction type only. */
+	private int calcLead_V1ant_LBBB(){
+		//TODO: implement Additional Rule ** Exclude anterosuperior points if right axis deviation is present )mean QRS axis >=90 degrees
+		Qpts_V1 = 0;
+		
+		if( (rd_V1 <= mapThreshold.get("rd_V1 lower")) || (ra_V1 <= mapThreshold.get("ra_V1 lower")) ){
+			Qpts_V1 += 1;
+		}
+		if( (rd_V1 <= mapThreshold.get("rd_V1 upper")) || (ra_V1 <= mapThreshold.get("ra_V1 upper")) ){
+			Qpts_V1 += 1;
+		}
+
+		
+		points_V1ant=Qpts_V1;  //  =Qpts_V1
+		return points_V1ant;
+	}
+	
+
 	private int calcLead_V1post(){
 		//-------------------- DG
 		//TODO: implement Additional rule ** (for all): (for posterolateral critera) exclude if right atrial overload present (suggesting RVH) if P positive amplitude in V1 or V2 P>=0.1 mV or aVF P>=0.175 mV.
@@ -1534,6 +1610,24 @@ public class QRS_Score {
 		return points_V2ant;
 	}
 	
+	/** Used for "LBBB" conduction type only. */
+	private int calcLead_V2ant_LBBB(){
+		//TODO: implement Additional Rule ** Exclude anterosuperior points if right axis deviation is present )mean QRS axis >=90 degrees
+		int Qpts_V2 = 0;
+
+		
+		if( (rd_V2 <= mapThreshold.get("rd_V2 lower")) || (ra_V2 <= mapThreshold.get("ra_V2 lower")) ){
+			Qpts_V2 += 1;
+		}
+		if( (rd_V2 <= mapThreshold.get("rd_V2 upper")) || (ra_V2 <= mapThreshold.get("ra_V2 upper")) ){
+			Qpts_V2 += 1;
+		}
+
+		
+		points_V2ant=Qpts_V2; 
+		return points_V2ant;
+	}
+
 	private int calcLead_V2post(){
 		//-------------------- DM
 		//TODO: implement Additional rule ** (for all): (for posterolateral critera) exclude if right atrial overload present (suggesting RVH) if P positive amplitude in V1 or V2 P>=0.1 mV or aVF P>=0.175 mV.
@@ -1624,6 +1718,19 @@ public class QRS_Score {
 
 		return points_V5;
 	}
+
+	private int calcLead_V5_LBBB(){
+		//--------------------
+		//TODO: implement .04R notch = notch in initial 40 ms (of R), no math currently available to evaluate this.
+		Qpts_V5 = ( (qd_V5 > mapThreshold.get("qd_V5")) || (RSra_V5 <= mapThreshold.get("RSra_V5 lower")) ) ? 1: 0;  
+
+		Rpts_V5 = (ra_V5 > mapThreshold.get("ra_V5")) ? 1: 0;
+		
+		points_V5 =Qpts_V5+Rpts_V5;  // =Qpts_V5+Rpts_V5
+
+		return points_V5;
+	}
+	
 	private int calcLead_V6(){
 		//--------------------
 		Qpts_V6 = (qd_V6 >= mapThreshold.get("qd_V6")) ? 1: 0;  //  =IF(qd_V6>=30,1,0)
@@ -1638,22 +1745,35 @@ public class QRS_Score {
 
 		return points_V6;
 	}
+
+	private int calcLead_V6_LBBB(){
+		//--------------------
+		//TODO: implement .04R notch = notch in initial 40 ms (of R), no math currently available to evaluate this.
+		Qpts_V6 = ( (qd_V6 > mapThreshold.get("qd_V6")) || (RSra_V6 <= mapThreshold.get("RSra_V6 lower")) ) ? 1: 0;  
+
+		Rpts_V6 = (ra_V6 > mapThreshold.get("ra_V6")) ? 1: 0;
+		
+		points_V6=Qpts_V6+Rpts_V6;  //  =Qpts_V6+Rpts_V6
+
+		return points_V6;
+	}
 	
 	/** Calculate Ratio used by many of the calculations.
 	 * Check for and fix divide by zero by setting the values to ridiculously large (9999999) or zero, as appropriate. 
 	 */
 	private void CalculateRatios(){
-		RQra_I = (qa_I==0) ?  9999999: ra_I/qa_I ;  //  =IF(qa_I=0,"",ra_I/qa_I)
-		RQra_aVL = (qa_aVL==0) ? 9999999: ra_aVL/qa_aVL;  //  =IF(qa_aVL=0,"",ra_aVL/qa_aVL)
-		RQra_aVF  = (qa_aVF==0) ? 9999999: ra_aVF/qa_aVF;  //  =IF(qa_aVF=0,"",ra_aVF/qa_aVF)
-		RQra_V4  = (qa_V4==0) ? 9999999: ra_V4/qa_V4;  //  =IF(qa_V4=0,"",ra_V4/qa_V4)
-		RQra_V5  = (qa_V5==0) ? 9999999: ra_V5/qa_V5;  //  =IF(qa_V5=0,"",ra_V5/qa_V5)
-		RQra_V6  = (qa_V6==0) ? 9999999: ra_V6/qa_V6;  //  =IF(qa_V6=0,"",ra_V6/qa_V6)
-		RSra_V1  = (sa_V1==0) ? 0: ra_V1/sa_V1;  //  =IF(sa_V1=0,0,ra_V1/sa_V1)
-		Rsra_V2  = (sa_V2==0) ? 0: ra_V2/sa_V2;  //  =IF(sa_V2=0,0,ra_V2/sa_V2)
-		RSra_V4  = (sa_V4==0) ? 9999999: ra_V4/sa_V4;  //  =IF(sa_V4=0,"",ra_V4/sa_V4)
-		RSra_V5  = (sa_V5==0) ? 9999999: ra_V5/sa_V5;  //  =IF(sa_V5=0,"",ra_V5/sa_V5)
-		RSra_V6  = (sa_V6==0) ? 9999999: ra_V6/sa_V6;  //  =IF(sa_V6=0,"",ra_V6/sa_V6)
+		RQra_I = (qa_I==0) ?  9999999: Math.abs(ra_I/qa_I) ;  //  =IF(qa_I=0,"",ra_I/qa_I)
+		RQra_aVL = (qa_aVL==0) ? 9999999: Math.abs(ra_aVL/qa_aVL);  //  =IF(qa_aVL=0,"",ra_aVL/qa_aVL)
+		RQra_aVF  = (qa_aVF==0) ? 9999999: Math.abs(ra_aVF/qa_aVF);  //  =IF(qa_aVF=0,"",ra_aVF/qa_aVF)
+		RQra_V4  = (qa_V4==0) ? 9999999: Math.abs(ra_V4/qa_V4);  //  =IF(qa_V4=0,"",ra_V4/qa_V4)
+		RQra_V5  = (qa_V5==0) ? 9999999: Math.abs(ra_V5/qa_V5);  //  =IF(qa_V5=0,"",ra_V5/qa_V5)
+		RQra_V6  = (qa_V6==0) ? 9999999: Math.abs(ra_V6/qa_V6);  //  =IF(qa_V6=0,"",ra_V6/qa_V6)
+		
+		RSra_V1  = (sa_V1==0) ? 0: Math.abs(ra_V1/sa_V1);  //  =IF(sa_V1=0,0,ra_V1/sa_V1)
+		Rsra_V2  = (sa_V2==0) ? 0: Math.abs(ra_V2/sa_V2);  //  =IF(sa_V2=0,0,ra_V2/sa_V2)
+		RSra_V4  = (sa_V4==0) ? 9999999: Math.abs(ra_V4/sa_V4);  //  =IF(sa_V4=0,"",ra_V4/sa_V4)
+		RSra_V5  = (sa_V5==0) ? 9999999: Math.abs(ra_V5/sa_V5);  //  =IF(sa_V5=0,"",ra_V5/sa_V5)
+		RSra_V6  = (sa_V6==0) ? 9999999: Math.abs(ra_V6/sa_V6);  //  =IF(sa_V6=0,"",ra_V6/sa_V6)
 	}
 	
 	/** Counts the parameters which have an invalid value of zero and creates a "/" separated list of them.
@@ -1777,6 +1897,7 @@ public class QRS_Score {
 		debugPrintln ("RATpts_I:" +  RATpts_I);
 		debugPrintln ("points_I:" +  points_I);
 		debugPrintln ("-------------------");
+		debugPrintln ("RATpts_II:" +  RATpts_II);
 		debugPrintln ("Qpts_II:" +  Qpts_II);
 		debugPrintln ("points_II:" +  points_II);
 		debugPrintln ("-------------------");

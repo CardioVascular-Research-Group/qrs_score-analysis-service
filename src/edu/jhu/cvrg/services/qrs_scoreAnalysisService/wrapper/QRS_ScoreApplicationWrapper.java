@@ -96,7 +96,7 @@ public class QRS_ScoreApplicationWrapper  extends ApplicationWrapper{
 						int[] scarPercentages = qrs.getPercentLVScarBySegment();
 						
 						QRSScoreBuff.append(result[12] + ","); // element 12 is QRS-Score
-						System.out.println(conductionTypeName + ": score = " + result[12]);
+//						System.out.println(conductionTypeName + ": score = " + result[12]);
 						//					    writer.write(conductionTypeName);
 					    for(int sp:scarPercentages){
 					    	scarPointBuff.append(sp + ",");
@@ -138,6 +138,8 @@ public class QRS_ScoreApplicationWrapper  extends ApplicationWrapper{
 			    
 			} catch (IOException ex) {
 			  bRet = false;
+			  debugPrintln(ex.getMessage());
+			  ex.printStackTrace();
 			} finally {
 			   try {
 				   writer.close();
@@ -156,6 +158,8 @@ public class QRS_ScoreApplicationWrapper  extends ApplicationWrapper{
 			
 		} catch (Exception e) {
 			bRet = false;
+			System.out.println(e.getMessage());
+			e.printStackTrace();
 			log.error(e.getMessage());
 		}
 

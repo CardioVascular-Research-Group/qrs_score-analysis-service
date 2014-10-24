@@ -41,7 +41,7 @@ public class QRS_ScoreService {
 	}
 
 	private OMElement callWrapper(org.apache.axiom.om.OMElement e, QRS_ScoreMethods method) {
-		debugPrintln(method.getOmeName() + "() started.");
+//		debugPrintln(method.getOmeName() + "() started.");
 		
 		AnalysisUtils util = new AnalysisUtils();
 		
